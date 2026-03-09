@@ -1,4 +1,4 @@
-const { sum, myFunction } = require('./sum');
+const { sum, myFunction, fetchData, fetchPromise } = require('./sum');
 
 // below is a simple test case
 test('adds 1 + 2, equals to 3', () => { // test function
@@ -28,4 +28,53 @@ test('Throws on invalid input',()=>{
         myFunction('lindi')
     }).toThrow();
 })
+
+test('The data is peanut', done => {
+    function callback(data){
+        try {
+            expect(data).toBe('peanut butter');
+            done();
+        } catch (error) {
+            done(error);
+        }
+    }
+
+    fetchData(callback);
+})
+
+test('promise peanut butter',()=>{
+    return expect(fetchPromise()).resolves.toBe('peanut butter');
+})
+
+test('fetch failing', ()=>{
+    return expect(fetchPromise()).rejects.toThrow('error');
+})
+
+test('async tester', async () => {
+    const data = await fetchPromise();
+    expect(data).toBe('peanut butter');
+})
+
+test('mock implementation of a basic function',() => {
+    const mock = jest.fn(x => 42 + x);
+    expect(mock(1)).toBe(43)
+    expect(mock).toHaveBeenCalledWith(1);
+})
+
+test('spying on a method on a object',() => {
+    const video = {
+        play(){
+            return true;
+        },
+    };
+
+    const spy = jest.spyOn(video, 'play');
+    video.play();
+
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+})
+
+
+
 
